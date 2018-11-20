@@ -1,7 +1,7 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: wolf-shaper
+Upstream-Name: wolf-lfo
 Upstream-Contact: Patrick Desaulniers <desaulniers.patrick@carrefour.cegepvicto.ca>
-Source: https://github.com/pdesaulniers/wolf-shaper
+Source: https://github.com/pdesaulniers/wolf-lfo
 
 Files: *
 Copyright: 2018 Patrick Desaulniers <desaulniers.patrick@carrefour.cegepvicto.ca>

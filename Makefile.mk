@@ -10,9 +10,9 @@ AR  ?= ar
 CC  ?= gcc
 CXX ?= g++
 
-export PLUGIN_NAME ?= wolf-shaper
-export DISTRHO_NAMESPACE ?= WOLF_SHAPER_DISTRHO
-export DGL_NAMESPACE ?= WOLF_SHAPER_DGL
+export PLUGIN_NAME ?= wolf-lfo
+export DISTRHO_NAMESPACE ?= WOLF_LFO_DISTRHO
+export DGL_NAMESPACE ?= WOLF_LFO_DGL
 
 EXTRA_INCLUDES ?=
 EXTRA_LIBS ?= -pthread

@@ -1,10 +1,10 @@
-# Wolf Shaper 
-[![Build Status](https://travis-ci.org/pdesaulniers/wolf-shaper.svg?branch=master)](https://travis-ci.org/pdesaulniers/wolf-shaper)
+# Wolf LFO 
+[![Build Status](https://travis-ci.org/pdesaulniers/wolf-lfo.svg?branch=master)](https://travis-ci.org/pdesaulniers/wolf-lfo)
 [![Chat on Matrix](https://matrix.to/img/matrix-badge.svg)](https://riot.im/app/#/user/@pdesaulniers:matrix.org?action=chat)
 
-![Wolf Shaper](https://raw.githubusercontent.com/pdesaulniers/wolf-shaper/master/plugins/wolf-shaper/Screenshot.png)
+![Wolf LFO](https://raw.githubusercontent.com/pdesaulniers/wolf-lfo/master/plugins/wolf-lfo/Screenshot.png)
 
-Wolf Shaper is a waveshaper plugin with a graph editor. It can be built as an LV2, DSSI or VST plugin and as a standalone Jack application.
+Wolf LFO is a waveshaper plugin with a graph editor. It can be built as an LV2, DSSI or VST plugin and as a standalone Jack application.
 
 Right now, it works on GNU/Linux and Windows. MacOS support is coming soon.
 
@@ -15,25 +15,25 @@ Right now, it works on GNU/Linux and Windows. MacOS support is coming soon.
 
 ## Install
 
-You can find some precompiled plugin binaries in the [Releases](https://github.com/pdesaulniers/wolf-shaper/releases) tab. Some packages are also available for Ubuntu and Arch Linux:
+You can find some precompiled plugin binaries in the [Releases](https://github.com/pdesaulniers/wolf-lfo/releases) tab. Some packages are also available for Ubuntu and Arch Linux:
 
 ### Ubuntu
 Download the plugin from the [pdesaulniers/wolf PPA](https://launchpad.net/~pdesaulniers/+archive/ubuntu/wolf):
 ```
 sudo apt-add-repository -y ppa:pdesaulniers/wolf
 sudo apt-get update
-sudo apt-get install wolf-shaper
+sudo apt-get install wolf-lfo
 ```
 ### Arch Linux
-Wolf Shaper is available [in the AUR](https://aur.archlinux.org/packages/wolf-shaper-git/). 
+Wolf LFO is available [in the AUR](https://aur.archlinux.org/packages/wolf-lfo-git/). 
 
 ## Build manually
 
 First, clone the repo (note the "--recursive" argument):
 
 ```
-git clone --recursive https://github.com/pdesaulniers/wolf-shaper.git
-cd wolf-shaper
+git clone --recursive https://github.com/pdesaulniers/wolf-lfo.git
+cd wolf-lfo
 ```
 
 Then:
@@ -48,7 +48,7 @@ All plugin builds will then be placed in the bin folder. Copy them to their appr
 
 ## How to use
 
-Online documentation is available at https://pdesaulniers.github.io/wolf-shaper/.
+Online documentation is available at https://pdesaulniers.github.io/wolf-lfo/.
 
 ## Updating
 

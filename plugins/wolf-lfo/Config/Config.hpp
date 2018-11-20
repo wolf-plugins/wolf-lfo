@@ -1,9 +1,9 @@
-#ifndef WOLF_SHAPER_CONFIG_H_INCLUDED
-#define WOLF_SHAPER_CONFIG_H_INCLUDED
+#ifndef WOLF_LFO_CONFIG_H_INCLUDED
+#define WOLF_LFO_CONFIG_H_INCLUDED
 
 START_NAMESPACE_DISTRHO
 
-namespace WolfShaperConfig
+namespace WolfLFOConfig
 {
 extern bool isLoaded;
 

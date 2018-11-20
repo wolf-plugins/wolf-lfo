@@ -1,5 +1,5 @@
 /*
- * Wolf Shaper
+ * Wolf LFO
  * Copyright (C) 2018 Patrick Desaulniers
  *
  * Permission to use, copy, modify, and/or distribute this software for any purpose with
@@ -25,7 +25,7 @@
 #include <iomanip>
 #include <cmath>
 
-#include "WolfShaperParameters.hpp"
+#include "WolfLFOParameters.hpp"
 #include "Graph.hpp"
 #include "Oversampler.hpp"
 #include "ParamSmooth.hpp"
@@ -36,12 +36,12 @@ START_NAMESPACE_DISTRHO
 
 // -----------------------------------------------------------------------------------------------------------
 
-class WolfShaper : public Plugin
+class WolfLFO : public Plugin
 {
   public:
 
 
-	WolfShaper() : Plugin(paramCount, 0, 1),
+	WolfLFO() : Plugin(paramCount, 0, 1),
 				   oversampler(),
 				   removeDCPrev({0.f, 0.f}),
 				   mustCopyLineEditor(false)
@@ -52,7 +52,7 @@ class WolfShaper : public Plugin
   protected:
 	const char *getLabel() const noexcept override
 	{
-		return "Wolf Shaper";
+		return "Wolf LFO";
 	}
 
 	const char *getDescription() const noexcept override
@@ -67,7 +67,7 @@ class WolfShaper : public Plugin
 
 	const char *getHomePage() const noexcept override
 	{
-		return "https://github.com/pdesaulniers/wolf-shaper";
+		return "https://github.com/pdesaulniers/wolf-lfo";
 	}
 
 	const char *getLicense() const noexcept override
@@ -407,12 +407,12 @@ class WolfShaper : public Plugin
 
 	float removeDCPrev[2];
 
-	DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WolfShaper)
+	DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WolfLFO)
 };
 
 Plugin *createPlugin()
 {
-	return new WolfShaper();
+	return new WolfLFO();
 }
 
 // -----------------------------------------------------------------------------------------------------------

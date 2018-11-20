@@ -1,8 +1,8 @@
-= Wolf Shaper
+= Wolf LFO
 
-image:https://raw.githubusercontent.com/pdesaulniers/wolf-shaper/master/plugins/wolf-shaper/Screenshot.png[Wolf Shaper]
+image:https://raw.githubusercontent.com/pdesaulniers/wolf-lfo/master/plugins/wolf-lfo/Screenshot.png[Wolf LFO]
 
-*Wolf Shaper* is a waveshaper plugin with a graph editor. It passes the input signal through a function, which you can design using curves. This processing results in a more harmonically rich signal.
+*Wolf LFO* is a waveshaper plugin with a graph editor. It passes the input signal through a function, which you can design using curves. This processing results in a more harmonically rich signal.
 
 == Master parameters
 - *Pre* – Controls the input volume, before any processing has taken place. This parameter can be automated for interesting modulation effects.

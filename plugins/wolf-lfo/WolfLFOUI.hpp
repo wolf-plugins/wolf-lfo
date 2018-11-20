@@ -1,7 +1,7 @@
-#ifndef WOLF_SHAPER_UI_HPP_INCLUDED
-#define WOLF_SHAPER_UI_HPP_INCLUDED
+#ifndef WOLF_LFO_UI_HPP_INCLUDED
+#define WOLF_LFO_UI_HPP_INCLUDED
 
-#include "WolfShaperParameters.hpp"
+#include "WolfLFOParameters.hpp"
 #include "DistrhoUI.hpp"
 #include "GraphWidget.hpp"
 #include "RemoveDCSwitch.hpp"
@@ -19,7 +19,7 @@
 
 START_NAMESPACE_DISTRHO
 
-class WolfShaperUI : public UI,
+class WolfLFOUI : public UI,
                      public NanoSwitch::Callback,
                      public NanoButton::Callback,
                      public NanoWheel::Callback,
@@ -27,8 +27,8 @@ class WolfShaperUI : public UI,
                      public ResizeHandle::Callback
 {
 public:
-  WolfShaperUI();
-  ~WolfShaperUI();
+  WolfLFOUI();
+  ~WolfLFOUI();
 
   float getParameterValue(uint32_t index) const;
 
@@ -84,7 +84,7 @@ private:
 
   bool fBottomBarVisible;
 
-  DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WolfShaperUI)
+  DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WolfLFOUI)
 };
 
 END_NAMESPACE_DISTRHO

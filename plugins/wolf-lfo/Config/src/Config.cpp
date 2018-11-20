@@ -21,7 +21,7 @@
 
 START_NAMESPACE_DISTRHO
 
-namespace WolfShaperConfig
+namespace WolfLFOConfig
 {
 
 enum ColorType
@@ -69,7 +69,7 @@ Color side_borders = Color(100, 100, 100, 255);
 
 static std::string getLocalConfigPath()
 {
-    const std::string configName = "wolf-shaper.conf";
+    const std::string configName = "wolf-lfo.conf";
 
 #if defined(DISTRHO_OS_WINDOWS)
     CHAR my_documents[MAX_PATH];
@@ -103,7 +103,7 @@ static std::string getSystemWideConfigPath()
 #if defined(DISTRHO_OS_WINDOWS)
     return getLocalConfigPath(); //pretty sure Windows users don't care about this
 #else
-    return "/etc/wolf-shaper.conf";
+    return "/etc/wolf-lfo.conf";
 #endif
 }
 
@@ -150,7 +150,7 @@ static void colorFromString(std::string colorStr, Color *targetColor)
     }
     else
     {
-        fprintf(stderr, "wolf-shaper: Warning! Invalid color type in config file: %s.\n", colorStr.c_str());
+        fprintf(stderr, "wolf-lfo: Warning! Invalid color type in config file: %s.\n", colorStr.c_str());
 
         return;
     }
@@ -164,7 +164,7 @@ static void colorFromString(std::string colorStr, Color *targetColor)
     }
     else
     {
-        fprintf(stderr, "wolf-shaper: Warning! Color has an invalid number of arguments: %s.\n", colorStr.c_str());
+        fprintf(stderr, "wolf-lfo: Warning! Color has an invalid number of arguments: %s.\n", colorStr.c_str());
     }
 
     return;
@@ -180,7 +180,7 @@ void load()
 
         if (reader.ParseError() < 0)
         {
-            std::cout << "Can't load 'wolf-shaper.conf', using defaults\n";
+            std::cout << "Can't load 'wolf-lfo.conf', using defaults\n";
             return;
         }
     }
@@ -209,8 +209,8 @@ void load()
     colorFromString(reader.Get("colors", "side_borders", ""), &side_borders);
 
     isLoaded = true;
-    std::cout << "Config loaded from 'wolf-shaper.conf'\n";
+    std::cout << "Config loaded from 'wolf-lfo.conf'\n";
 }
-} // namespace WolfShaperConfig
+} // namespace WolfLFOConfig
 
 END_NAMESPACE_DISTRHO

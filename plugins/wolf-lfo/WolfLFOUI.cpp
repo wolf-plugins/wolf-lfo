@@ -1,6 +1,6 @@
 #include "DistrhoUI.hpp"
 
-#include "WolfShaperUI.hpp"
+#include "WolfLFOUI.hpp"
 #include "Window.hpp"
 #include "Config.hpp"
 #include "Layout.hpp"
@@ -14,7 +14,7 @@
 
 START_NAMESPACE_DISTRHO
 
-WolfShaperUI::WolfShaperUI() : UI(611, 662),
+WolfLFOUI::WolfLFOUI() : UI(611, 662),
                                fBottomBarVisible(true)
 {
     const uint minWidth = 611;
@@ -29,7 +29,7 @@ WolfShaperUI::WolfShaperUI() : UI(611, 662),
     NanoVG::FontId chivoBoldId = createFontFromMemory("chivo_bold", (const uchar *)chivo_bold, chivo_bold_size, 0);
     NanoVG::FontId dejaVuSansId = findFont(NANOVG_DEJAVU_SANS_TTF);
 
-    WolfShaperConfig::load();
+    WolfLFOConfig::load();
 
     tryRememberSize();
     getParentWindow().saveSizeAtExit(true);
@@ -156,11 +156,11 @@ WolfShaperUI::WolfShaperUI() : UI(611, 662),
     positionWidgets(width, height);
 }
 
-WolfShaperUI::~WolfShaperUI()
+WolfLFOUI::~WolfLFOUI()
 {
 }
 
-void WolfShaperUI::tryRememberSize()
+void WolfLFOUI::tryRememberSize()
 {
     int width, height;
     FILE *file;
@@ -189,7 +189,7 @@ void WolfShaperUI::tryRememberSize()
     fclose(file);
 }
 
-void WolfShaperUI::positionWidgets(uint width, uint height)
+void WolfLFOUI::positionWidgets(uint width, uint height)
 {
     //TODO: Clean that up
 
@@ -257,7 +257,7 @@ void WolfShaperUI::positionWidgets(uint width, uint height)
     fHandleResize->setAbsolutePos(width - fHandleResize->getWidth(), height - fHandleResize->getHeight());
 }
 
-void WolfShaperUI::parameterChanged(uint32_t index, float value)
+void WolfLFOUI::parameterChanged(uint32_t index, float value)
 {
     switch (index)
     {
@@ -318,7 +318,7 @@ void WolfShaperUI::parameterChanged(uint32_t index, float value)
     }
 }
 
-void WolfShaperUI::stateChanged(const char *key, const char *value)
+void WolfLFOUI::stateChanged(const char *key, const char *value)
 {
     if (std::strcmp(key, "graph") == 0)
         fGraphWidget->rebuildFromString(value);
@@ -326,7 +326,7 @@ void WolfShaperUI::stateChanged(const char *key, const char *value)
     repaint();
 }
 
-void WolfShaperUI::onNanoDisplay()
+void WolfLFOUI::onNanoDisplay()
 {
     const float width = getWidth();
     const float height = getHeight();
@@ -335,7 +335,7 @@ void WolfShaperUI::onNanoDisplay()
     beginPath();
 
     rect(0.f, 0.f, width, height);
-    fillColor(WolfShaperConfig::plugin_background);
+    fillColor(WolfLFOConfig::plugin_background);
 
     fill();
 
@@ -361,22 +361,22 @@ void WolfShaperUI::onNanoDisplay()
     closePath();
 }
 
-void WolfShaperUI::uiIdle()
+void WolfLFOUI::uiIdle()
 {
 }
 
-bool WolfShaperUI::onMouse(const MouseEvent &ev)
+bool WolfLFOUI::onMouse(const MouseEvent &ev)
 {
     return false;
 }
 
-void WolfShaperUI::uiReshape(uint width, uint height)
+void WolfLFOUI::uiReshape(uint width, uint height)
 {
     //setSize(width, height);
     positionWidgets(width, height);
 }
 
-void WolfShaperUI::toggleBottomBarVisibility()
+void WolfLFOUI::toggleBottomBarVisibility()
 {
     fBottomBarVisible = !fBottomBarVisible;
 
@@ -405,7 +405,7 @@ void WolfShaperUI::toggleBottomBarVisibility()
     positionWidgets(getWidth(), getHeight());
 }
 
-bool WolfShaperUI::onKeyboard(const KeyboardEvent &ev)
+bool WolfLFOUI::onKeyboard(const KeyboardEvent &ev)
 {
     if (ev.press)
     {
@@ -418,7 +418,7 @@ bool WolfShaperUI::onKeyboard(const KeyboardEvent &ev)
     return true;
 }
 
-void WolfShaperUI::nanoSwitchClicked(NanoSwitch *nanoSwitch)
+void WolfLFOUI::nanoSwitchClicked(NanoSwitch *nanoSwitch)
 {
     const uint switchId = nanoSwitch->getId();
     const int value = nanoSwitch->isDown() ? 1 : 0;
@@ -431,7 +431,7 @@ void WolfShaperUI::nanoSwitchClicked(NanoSwitch *nanoSwitch)
     }
 }
 
-void WolfShaperUI::nanoButtonClicked(NanoButton *nanoButton)
+void WolfLFOUI::nanoButtonClicked(NanoButton *nanoButton)
 {
     if (nanoButton == fButtonResetGraph)
     {
@@ -476,7 +476,7 @@ void WolfShaperUI::nanoButtonClicked(NanoButton *nanoButton)
     }
 }
 
-void WolfShaperUI::nanoWheelValueChanged(NanoWheel *nanoWheel, const int value)
+void WolfLFOUI::nanoWheelValueChanged(NanoWheel *nanoWheel, const int value)
 {
     const uint id = nanoWheel->getId();
 
@@ -492,7 +492,7 @@ void WolfShaperUI::nanoWheelValueChanged(NanoWheel *nanoWheel, const int value)
     }
 }
 
-void WolfShaperUI::nanoKnobValueChanged(NanoKnob *nanoKnob, const float value)
+void WolfLFOUI::nanoKnobValueChanged(NanoKnob *nanoKnob, const float value)
 {
     const uint id = nanoKnob->getId();
 
@@ -508,14 +508,14 @@ void WolfShaperUI::nanoKnobValueChanged(NanoKnob *nanoKnob, const float value)
     }
 }
 
-void WolfShaperUI::resizeHandleMoved(int width, int height)
+void WolfLFOUI::resizeHandleMoved(int width, int height)
 {
     setSize(width, height);
 }
 
 UI *createUI()
 {
-    return new WolfShaperUI();
+    return new WolfLFOUI();
 }
 
 END_NAMESPACE_DISTRHO

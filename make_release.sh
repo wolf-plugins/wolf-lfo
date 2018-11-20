@@ -1,4 +1,4 @@
-PLUGIN_NAME=wolf-shaper
+PLUGIN_NAME=wolf-lfo
 PLUGIN_VERSION=v0.1.5
 
 PLATFORM_NAME=linux

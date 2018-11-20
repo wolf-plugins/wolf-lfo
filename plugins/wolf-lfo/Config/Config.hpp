@@ -3,7 +3,8 @@
 
 START_NAMESPACE_DISTRHO
 
-namespace WolfLFOConfig
+#define CONFIG_NAMESPACE WolfLFOConfig
+namespace CONFIG_NAMESPACE
 {
 extern bool isLoaded;
 

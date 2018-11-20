@@ -34,6 +34,7 @@ OBJS_DSP = \
 	WolfLFOPlugin.cpp.o
 
 OBJS_UI  = \
+	Config/src/Config.cpp.o \
 	Common/Utils/src/Mathf.cpp.o \
 	Common/Structures/src/Graph.cpp.o \
 	Common/Structures/src/Layout.cpp.o \
@@ -59,7 +60,6 @@ OBJS_UI  = \
 	Common/Widgets/src/WidgetBar.cpp.o \
 	Common/Widgets/src/ArrowButton.cpp.o \
 	Common/Widgets/src/RightClickMenu.cpp.o \
-	Config/src/Config.cpp.o \
 	Libs/inih/ini.c.o \
 	Libs/inih/INIReader.cpp.o \
 	Resources/Fonts/roboto_light.cpp.o \

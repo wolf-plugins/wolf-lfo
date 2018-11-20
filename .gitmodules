@@ -1,9 +1,9 @@
 [submodule "dpf"]
 	path = dpf
 	url = https://github.com/pdesaulniers/DPF.git
-[submodule "plugins/wolf-shaper/Libs/inih"]
-	path = plugins/wolf-shaper/Libs/inih
+[submodule "plugins/wolf-lfo/Libs/inih"]
+	path = plugins/wolf-lfo/Libs/inih
 	url = https://github.com/pdesaulniers/inih.git
-[submodule "plugins/wolf-shaper/Common"]
-	path = plugins/wolf-shaper/Common
+[submodule "plugins/wolf-lfo/Common"]
+	path = plugins/wolf-lfo/Common
 	url = https://github.com/pdesaulniers/wolf-common.git

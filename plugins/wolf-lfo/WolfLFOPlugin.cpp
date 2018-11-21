@@ -42,9 +42,8 @@ class WolfLFO : public Plugin
 
 
 	WolfLFO() : Plugin(paramCount, 0, 1),
-				   oversampler(),
-				   removeDCPrev({0.f, 0.f}),
-				   mustCopyLineEditor(false)
+				mustCopyLineEditor(false),
+				playHeadPos(0.0f)
 	{
 
 	}
@@ -57,7 +56,7 @@ class WolfLFO : public Plugin
 
 	const char *getDescription() const noexcept override
 	{
-		return "Waveshaping distortion plugin with spline-based graph.";
+		return "Multi-purpose LFO plugin with a spline-based graph.";
 	}
 
 	const char *getMaker() const noexcept override
@@ -77,12 +76,12 @@ class WolfLFO : public Plugin
 
 	uint32_t getVersion() const noexcept override
 	{
-		return d_version(0, 1, 0);
+		return d_version(0, 0, 1);
 	}
 
 	int64_t getUniqueId() const noexcept override
 	{
-		return d_cconst('s', 'W', 's', 'p');
+		return d_cconst('W', 'L', 'F', 'O');
 	}
 
 	void initParameter(uint32_t index, Parameter &parameter) override
@@ -192,22 +191,9 @@ class WolfLFO : public Plugin
 		return parameters[index].getRawValue();
 	}
 
-	int getOversamplingRatio()
-	{
-		return std::pow(2, std::round(parameters[paramOversample].getRawValue()));
-	}
-
 	void setParameterValue(uint32_t index, float value) override
 	{
 		parameters[index].setValue(value);
-
-		if (index == paramOversample)
-		{
-			for (int i = 0; i < paramCount; ++i)
-			{
-				parameters[i].calculateCoeff(20.f, getSampleRate() * getOversamplingRatio());
-			}
-		}
 	}
 
 	void initState(uint32_t index, String &stateKey, String &defaultStateValue) override
@@ -234,70 +220,18 @@ class WolfLFO : public Plugin
 		}
 	}
 
-	float removeDCOffset(float input, int chn)
-	{
-		//Steep IIR filter at the DC frequency
-
-		const float scaleFactor = 0.9999f; //Closer to 1 means steeper stop band
-
-		const float value = input + scaleFactor * removeDCPrev[chn];
-		const float result = value - removeDCPrev[chn];
-
-		removeDCPrev[chn] = value;
-
-		return result;
-	}
-
-	/* bool isSilence(const float **buffer, uint32_t frames)
-	{
-		for (uint32_t i = 0; i < frames; ++i)
-		{
-			if (buffer[0][i] != 0.0f || buffer[1][i] != 0.0f)
-			{
-				return false;
-			}
-		}
-
-		return true;
-	} */
-
-	float calculateValueOutsideGraph(float value)
-	{
-		const bool bipolarMode = lineEditor.getBipolarMode();
-
-		if (bipolarMode)
-		{
-			const bool positiveInput = value >= 0.0f;
-			const float vertexY = lineEditor.getVertexAtIndex(positiveInput ? lineEditor.getVertexCount() - 1 : 0)->getY();
-			const float absValue = std::abs(value);
-
-			return absValue * (-1.0f + vertexY * 2.0f);
-		}
-		else
-		{
-			return value * lineEditor.getVertexAtIndex(lineEditor.getVertexCount() - 1)->getY();
-		}
-	}
-
 	float getGraphValue(float input)
 	{
-		const float absInput = std::abs(input);
+		return lineEditor.getValueAt(input);
+	}
 
-		if (absInput > 1.0f)
+	void updatePlayHeadPos()
+	{
+		playHeadPos += getSampleRate() / 1.0f;
+		
+		if (playHeadPos > 1.0f)
 		{
-			return calculateValueOutsideGraph(input);
-		}
-
-		const bool bipolarMode = lineEditor.getBipolarMode();
-
-		if (bipolarMode)
-		{
-			const float x = (1.0f + input) * 0.5f;
-			return -1.0f + lineEditor.getValueAt(x) * 2.0f;
-		}
-		else
-		{
-			return lineEditor.getValueAt(input);
+			playHeadPos -= 1.0f;
 		}
 	}
 
@@ -318,27 +252,13 @@ class WolfLFO : public Plugin
 			}
 		}
 
-		float max = 0.0f;
-
-		const int oversamplingRatio = getOversamplingRatio();
-		uint32_t numSamples = frames * oversamplingRatio;
-
 		const double sampleRate = getSampleRate();
-		
-		float **buffer = oversampler.upsample(oversamplingRatio, frames, sampleRate, inputs);
 
 		wolf::WarpType horizontalWarpType = (wolf::WarpType)std::round(parameters[paramHorizontalWarpType].getRawValue());
 		lineEditor.setHorizontalWarpType(horizontalWarpType);
 
 		wolf::WarpType verticalWarpType = (wolf::WarpType)std::round(parameters[paramVerticalWarpType].getRawValue());
 		lineEditor.setVerticalWarpType(verticalWarpType);
-
-		const bool mustRemoveDC = parameters[paramRemoveDC].getRawValue() > 0.50f;
-
-		if (!mustRemoveDC) {
-			removeDCPrev[0] = 0.f;
-			removeDCPrev[1] = 0.f;
-		}
 
 		for (uint32_t i = 0; i < numSamples; ++i)
 		{
@@ -347,10 +267,9 @@ class WolfLFO : public Plugin
 
 			const float preGain = parameters[paramPreGain].getSmoothedValue();
 
-			float inputL = preGain * buffer[0][i];
-			float inputR = preGain * buffer[1][i];
+			float inputL = preGain * inputs[0][i];
+			float inputR = preGain * inputs[1][i];
 
-			//this hack makes sure that dc offset in the graph doesn't oscillate... hopefully
 			if (inputL < 0.0f && inputL > -0.00001f)
 			{
 				inputL = 0.0f;
@@ -360,52 +279,36 @@ class WolfLFO : public Plugin
 				inputR = 0.0f;
 			}
 
-			const float absL = std::abs(inputL);
-			const float absR = std::abs(inputR);
+			const float graphValue = getGraphValue(playHeadPos);
 
-			max = std::max(max, absL);
-			max = std::max(max, absR);
-
-			const bool bipolarMode = parameters[paramBipolarMode].getRawValue() > 0.50f;
-			lineEditor.setBipolarMode(bipolarMode);
-
-			float graphL, graphR;
-
-			graphL = getGraphValue(inputL);
-			graphR = getGraphValue(inputR);
+			const float outL = inputL * graphValue;
+			const float outR = inputR * graphValue;
 
 			const float wet = parameters[paramWet].getSmoothedValue();
 			const float dry = 1.0f - wet;
 			const float postGain = parameters[paramPostGain].getSmoothedValue();
 
-			buffer[0][i] = (dry * inputL + wet * graphL) * postGain;
-			buffer[1][i] = (dry * inputR + wet * graphR) * postGain;
-
-			if (mustRemoveDC)
-			{
-				buffer[0][i] = removeDCOffset(buffer[0][i], 0);
-				buffer[1][i] = removeDCOffset(buffer[1][i], 1);
-			}
+			buffer[0][i] = (dry * inputL + wet * outL) * postGain;
+			buffer[1][i] = (dry * inputR + wet * outR) * postGain;
 		}
 
-		oversampler.downsample(outputs);
+		updatePlayHeadPos();
 
-		setParameterValue(paramOut, max);
+		setParameterValue(paramOut, playHeadPos);
 
 		mutex.unlock();
 	}
 
   private:
 	ParamSmooth parameters[paramCount];
-	Oversampler oversampler;
 
 	wolf::Graph lineEditor;
 	wolf::Graph tempLineEditor;
 	bool mustCopyLineEditor;
 
-	Mutex mutex;
+	float playHeadPos;
 
-	float removeDCPrev[2];
+	Mutex mutex;
 
 	DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WolfLFO)
 };

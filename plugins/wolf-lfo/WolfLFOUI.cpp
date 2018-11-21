@@ -367,6 +367,8 @@ void WolfLFOUI::uiIdle()
 
 bool WolfLFOUI::onMouse(const MouseEvent &ev)
 {
+    WolfLFOConfig::load();
+
     return false;
 }
 

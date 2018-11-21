@@ -45,6 +45,7 @@ Color in_out_labels = Color(255, 255, 255, 125);
 Color alignment_lines = Color(255, 255, 255, 180);
 Color input_volume_indicator = Color(255, 255, 255, 180);
 
+float graph_edges_stroke_width = 2.0f;
 Color graph_edges_background_normal = Color(169, 29, 239, 100);
 Color graph_edges_background_focused = Color(255, 221, 76, 100);
 
@@ -59,8 +60,14 @@ Color vertex_halo = Color(0, 0, 0, 255);
 Color vertex_stroke_normal = Color(0, 0, 0, 255);
 Color vertex_stroke_focused = Color(0, 0, 0, 255);
 
+float vertex_radius = 8.0f;
+float vertex_stroke_width = 2.0f;
+
 Color tension_handle_normal = Color(228, 104, 181, 255);
 Color tension_handle_focused = Color(228, 228, 181, 255);
+
+float tension_handle_radius = 4.0f;
+float tension_handle_stroke_width = 2.0f;
 
 Color plugin_background = Color(42, 44, 47, 255);
 Color graph_margin = Color(33, 32, 39, 255);
@@ -106,6 +113,22 @@ static std::string getSystemWideConfigPath()
     return "/etc/wolf-lfo.conf";
 #endif
 }
+
+bool tryParseFloat(std::string myString, float *out) 
+{
+    std::istringstream iss(myString);
+    float f;
+    iss >> f;
+
+    if (iss.eof() && !iss.fail())
+    {
+        *out = f;
+        return true;
+    }
+
+    return false; 
+}
+
 
 /**
  * Convert a string containing color values to a Color struct.
@@ -194,6 +217,7 @@ void load()
     colorFromString(reader.Get("colors", "input_volume_indicator", ""), &input_volume_indicator);
     colorFromString(reader.Get("colors", "graph_edges_background_normal", ""), &graph_edges_background_normal);
     colorFromString(reader.Get("colors", "graph_edges_background_focused", ""), &graph_edges_background_focused);
+    tryParseFloat(reader.Get("dimensions", "graph_edges_stroke_width", ""), &graph_edges_stroke_width);
     colorFromString(reader.Get("colors", "graph_edges_foreground_normal", ""), &graph_edges_foreground_normal);
     colorFromString(reader.Get("colors", "graph_edges_foreground_focused", ""), &graph_edges_foreground_focused);
     colorFromString(reader.Get("colors", "vertex_fill_normal", ""), &vertex_fill_normal);
@@ -201,8 +225,12 @@ void load()
     colorFromString(reader.Get("colors", "vertex_halo", ""), &vertex_halo);
     colorFromString(reader.Get("colors", "vertex_stroke_normal", ""), &vertex_stroke_normal);
     colorFromString(reader.Get("colors", "vertex_stroke_focused", ""), &vertex_stroke_focused);
+    tryParseFloat(reader.Get("dimensions", "vertex_radius", ""), &vertex_radius);
+    tryParseFloat(reader.Get("dimensions", "vertex_stroke_width", ""), &vertex_stroke_width);
     colorFromString(reader.Get("colors", "tension_handle_normal", ""), &tension_handle_normal);
     colorFromString(reader.Get("colors", "tension_handle_focused", ""), &tension_handle_focused);
+    tryParseFloat(reader.Get("dimensions", "tension_handle_radius", ""), &tension_handle_radius);
+    tryParseFloat(reader.Get("dimensions", "tension_handle_stroke_width", ""), &tension_handle_stroke_width);
     colorFromString(reader.Get("colors", "plugin_background", ""), &plugin_background);
     colorFromString(reader.Get("colors", "graph_margin", ""), &graph_margin);
     colorFromString(reader.Get("colors", "top_border", ""), &top_border);

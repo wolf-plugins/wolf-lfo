@@ -40,9 +40,11 @@ class WolfLFO : public Plugin
 {
   public:
 	WolfLFO() : Plugin(paramCount, 0, 1),
+				graphOutput(),
 				mustCopyLineEditor(false),
 				playHeadPos(0.0f)
 	{
+		graphOutput.calculateCoeff(20.f, getSampleRate());
 	}
 
   protected:
@@ -224,7 +226,7 @@ class WolfLFO : public Plugin
 
 	void updatePlayHeadPos()
 	{
-		playHeadPos += 1.0f / getSampleRate();
+		playHeadPos += 1.0f / getSampleRate() / 2.0f;
 
 		if (playHeadPos > 1.0f)
 		{
@@ -274,10 +276,11 @@ class WolfLFO : public Plugin
 				inputR = 0.0f;
 			}
 
-			const float graphValue = getGraphValue(playHeadPos);
+			graphOutput.setValue(getGraphValue(playHeadPos));
+			const float smoothedOutput = graphOutput.getSmoothedValue();
 
-			const float outL = inputL * graphValue;
-			const float outR = inputR * graphValue;
+			const float outL = inputL * smoothedOutput;
+			const float outR = inputR * smoothedOutput;
 
 			const float wet = parameters[paramWet].getSmoothedValue();
 			const float dry = 1.0f - wet;
@@ -296,6 +299,7 @@ class WolfLFO : public Plugin
 
   private:
 	ParamSmooth parameters[paramCount];
+	ParamSmooth graphOutput;
 
 	wolf::Graph lineEditor;
 	wolf::Graph tempLineEditor;

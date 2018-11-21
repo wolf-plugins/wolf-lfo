@@ -22,6 +22,8 @@ extern Color graph_edges_background_focused;
 extern float graph_edges_stroke_width;
 extern Color graph_edges_foreground_normal;
 extern Color graph_edges_foreground_focused;
+extern Color graph_gradient_icol;
+extern Color graph_gradient_ocol;
 extern Color vertex_fill_normal;
 extern Color vertex_fill_focused;
 extern Color vertex_halo;

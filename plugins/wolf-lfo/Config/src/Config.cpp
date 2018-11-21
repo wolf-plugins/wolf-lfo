@@ -52,6 +52,9 @@ Color graph_edges_background_focused = Color(255, 221, 76, 100);
 Color graph_edges_foreground_normal = Color(239, 61, 227, 255);
 Color graph_edges_foreground_focused = Color(255, 221, 76, 255);
 
+Color graph_gradient_icol = Color(60, 60, 60, 20);
+Color graph_gradient_ocol = Color(60, 60, 60, 60);
+
 Color vertex_fill_normal = Color(255, 255, 255, 255);
 Color vertex_fill_focused = Color(255, 221, 76, 255);
 
@@ -220,6 +223,8 @@ void load()
     tryParseFloat(reader.Get("dimensions", "graph_edges_stroke_width", ""), &graph_edges_stroke_width);
     colorFromString(reader.Get("colors", "graph_edges_foreground_normal", ""), &graph_edges_foreground_normal);
     colorFromString(reader.Get("colors", "graph_edges_foreground_focused", ""), &graph_edges_foreground_focused);
+    colorFromString(reader.Get("colors", "graph_gradient_icol", ""), &graph_gradient_icol);
+    colorFromString(reader.Get("colors", "graph_gradient_ocol", ""), &graph_gradient_ocol);
     colorFromString(reader.Get("colors", "vertex_fill_normal", ""), &vertex_fill_normal);
     colorFromString(reader.Get("colors", "vertex_fill_focused", ""), &vertex_fill_focused);
     colorFromString(reader.Get("colors", "vertex_halo", ""), &vertex_halo);

@@ -17,6 +17,8 @@ extern Color grid_middle_line_vertical;
 extern Color in_out_labels;
 extern Color alignment_lines;
 extern Color input_volume_indicator;
+extern Color playhead_circle_fill;
+extern Color playhead_circle_stroke;
 extern Color graph_edges_background_normal;
 extern Color graph_edges_background_focused;
 extern float graph_edges_stroke_width;

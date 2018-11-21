@@ -15,6 +15,6 @@
 #define DISTRHO_PLUGIN_WANT_STATE      1
 #define DISTRHO_PLUGIN_WANT_FULL_STATE 0
 
-#define DISTRHO_PLUGIN_LV2_CATEGORY "lv2:WaveshaperPlugin"
+#define DISTRHO_PLUGIN_LV2_CATEGORY "lv2:EnvelopePlugin" //is that the most appropriate category?
 
 #endif // DISTRHO_PLUGIN_INFO_H_INCLUDED

@@ -45,6 +45,9 @@ Color in_out_labels = Color(255, 255, 255, 125);
 Color alignment_lines = Color(255, 255, 255, 180);
 Color input_volume_indicator = Color(255, 255, 255, 180);
 
+Color playhead_circle_fill = Color(255, 255, 255, 180);
+Color playhead_circle_stroke = Color(255, 255, 255, 180);
+
 float graph_edges_stroke_width = 2.0f;
 Color graph_edges_background_normal = Color(169, 29, 239, 100);
 Color graph_edges_background_focused = Color(255, 221, 76, 100);
@@ -218,6 +221,8 @@ void load()
     colorFromString(reader.Get("colors", "in_out_labels", ""), &in_out_labels);
     colorFromString(reader.Get("colors", "alignment_lines", ""), &alignment_lines);
     colorFromString(reader.Get("colors", "input_volume_indicator", ""), &input_volume_indicator);
+    colorFromString(reader.Get("colors", "playhead_circle_fill", ""), &playhead_circle_fill);
+    colorFromString(reader.Get("colors", "playhead_circle_stroke", ""), &playhead_circle_stroke);
     colorFromString(reader.Get("colors", "graph_edges_background_normal", ""), &graph_edges_background_normal);
     colorFromString(reader.Get("colors", "graph_edges_background_focused", ""), &graph_edges_background_focused);
     tryParseFloat(reader.Get("dimensions", "graph_edges_stroke_width", ""), &graph_edges_stroke_width);

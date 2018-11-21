@@ -39,13 +39,10 @@ START_NAMESPACE_DISTRHO
 class WolfLFO : public Plugin
 {
   public:
-
-
 	WolfLFO() : Plugin(paramCount, 0, 1),
 				mustCopyLineEditor(false),
 				playHeadPos(0.0f)
 	{
-
 	}
 
   protected:
@@ -88,7 +85,7 @@ class WolfLFO : public Plugin
 	{
 		if (index >= paramCount)
 			return;
-		
+
 		switch (index)
 		{
 		case paramPreGain:
@@ -227,8 +224,8 @@ class WolfLFO : public Plugin
 
 	void updatePlayHeadPos()
 	{
-		playHeadPos += getSampleRate() / 1.0f;
-		
+		playHeadPos += 1.0f / getSampleRate();
+
 		if (playHeadPos > 1.0f)
 		{
 			playHeadPos -= 1.0f;
@@ -247,12 +244,10 @@ class WolfLFO : public Plugin
 				{
 					lineEditor.getVertexAtIndex(i)->setGraphPtr(&lineEditor);
 				}
-				
+
 				mustCopyLineEditor = false;
 			}
 		}
-
-		const double sampleRate = getSampleRate();
 
 		wolf::WarpType horizontalWarpType = (wolf::WarpType)std::round(parameters[paramHorizontalWarpType].getRawValue());
 		lineEditor.setHorizontalWarpType(horizontalWarpType);
@@ -260,7 +255,7 @@ class WolfLFO : public Plugin
 		wolf::WarpType verticalWarpType = (wolf::WarpType)std::round(parameters[paramVerticalWarpType].getRawValue());
 		lineEditor.setVerticalWarpType(verticalWarpType);
 
-		for (uint32_t i = 0; i < numSamples; ++i)
+		for (uint32_t i = 0; i < frames; ++i)
 		{
 			lineEditor.setHorizontalWarpAmount(parameters[paramHorizontalWarpAmount].getSmoothedValue());
 			lineEditor.setVerticalWarpAmount(parameters[paramVerticalWarpAmount].getSmoothedValue());
@@ -288,11 +283,11 @@ class WolfLFO : public Plugin
 			const float dry = 1.0f - wet;
 			const float postGain = parameters[paramPostGain].getSmoothedValue();
 
-			buffer[0][i] = (dry * inputL + wet * outL) * postGain;
-			buffer[1][i] = (dry * inputR + wet * outR) * postGain;
-		}
+			outputs[0][i] = (dry * inputL + wet * outL) * postGain;
+			outputs[1][i] = (dry * inputR + wet * outR) * postGain;
 
-		updatePlayHeadPos();
+			updatePlayHeadPos();
+		}
 
 		setParameterValue(paramOut, playHeadPos);
 

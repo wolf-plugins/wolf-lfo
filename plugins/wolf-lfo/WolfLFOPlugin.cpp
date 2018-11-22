@@ -279,8 +279,11 @@ class WolfLFO : public Plugin
 			graphOutput.setValue(getGraphValue(playHeadPos));
 			const float smoothedOutput = graphOutput.getSmoothedValue();
 
-			const float outL = inputL * smoothedOutput;
-			const float outR = inputR * smoothedOutput;
+			const double euler = std::exp(1.0);
+			const float scaledOutput = (std::exp(smoothedOutput) - 1) / (euler - 1);
+
+			const float outL = inputL * scaledOutput;
+			const float outR = inputR * scaledOutput;
 
 			const float wet = parameters[paramWet].getSmoothedValue();
 			const float dry = 1.0f - wet;

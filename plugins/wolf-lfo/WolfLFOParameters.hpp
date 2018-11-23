@@ -17,6 +17,8 @@ enum Parameters
     paramHorizontalWarpAmount,
     paramVerticalWarpType,
     paramVerticalWarpAmount,
+    paramLFORate,
+    paramBPMSync,
     paramOut,
     paramCount
 };

@@ -173,6 +173,22 @@ class WolfLFO : public Plugin
 			parameter.ranges.def = 0.0f;
 			parameter.hints = kParameterIsAutomable;
 			break;
+		case paramLFORate:
+			parameter.name = "LFO Rate";
+			parameter.symbol = "lforate";
+			parameter.ranges.min = 0.0f;
+			parameter.ranges.max = 22.0f;
+			parameter.ranges.def = 12.0f;
+			parameter.hints = kParameterIsAutomable | kParameterIsInteger;
+			break;
+		case paramBPMSync:
+			parameter.name = "BPM Sync";
+			parameter.symbol = "bpmsync";
+			parameter.ranges.min = 0.0f;
+			parameter.ranges.max = 1.0f;
+			parameter.ranges.def = 1.0f;
+			parameter.hints = kParameterIsAutomable | kParameterIsBoolean;
+			break;
 		case paramOut:
 			parameter.name = "Out";
 			parameter.symbol = "out";
@@ -224,9 +240,29 @@ class WolfLFO : public Plugin
 		return lineEditor.getValueAt(input);
 	}
 
+	void synchronisePlayHead()
+	{
+		const TimePosition &timePos = getTimePosition();
+
+		if (!timePos.bbt.valid)
+			return;
+
+		const int32_t bar = timePos.bbt.bar;
+		const int32_t beat = timePos.bbt.beat;
+		const int32_t beatTick = timePos.bbt.tick;
+		const double ticksPerBeat = timePos.bbt.ticksPerBeat;
+
+		playHeadPos = beatTick / ticksPerBeat;
+	}
+
 	void updatePlayHeadPos()
 	{
-		playHeadPos += 1.0f / getSampleRate() / 2.0f;
+		const TimePosition &timePos = getTimePosition();
+
+		if (!timePos.playing)
+			return;
+
+		playHeadPos += 1.0f / getSampleRate() / 60.f * timePos.bbt.beatsPerMinute / 4.0f;
 
 		if (playHeadPos > 1.0f)
 		{
@@ -256,6 +292,8 @@ class WolfLFO : public Plugin
 
 		wolf::WarpType verticalWarpType = (wolf::WarpType)std::round(parameters[paramVerticalWarpType].getRawValue());
 		lineEditor.setVerticalWarpType(verticalWarpType);
+
+		synchronisePlayHead();
 
 		for (uint32_t i = 0; i < frames; ++i)
 		{

@@ -240,19 +240,26 @@ class WolfLFO : public Plugin
 		return lineEditor.getValueAt(input);
 	}
 
-	void synchronisePlayHead()
+	void synchronizePlayHead()
 	{
-		const TimePosition &timePos = getTimePosition();
+		const TimePosition::BarBeatTick bbt = getTimePosition().bbt;
 
-		if (!timePos.bbt.valid)
+		if (!bbt.valid)
 			return;
 
-		const int32_t bar = timePos.bbt.bar;
-		const int32_t beat = timePos.bbt.beat;
-		const int32_t beatTick = timePos.bbt.tick;
-		const double ticksPerBeat = timePos.bbt.ticksPerBeat;
+		const int32_t bar = bbt.bar - 1;
+		const int32_t beat = bbt.beat - 1;
+		const int32_t beatTick = bbt.tick;
+		const double ticksPerBeat = bbt.ticksPerBeat;
+		const float beatsPerBar = bbt.beatsPerBar;
 
-		playHeadPos = beatTick / ticksPerBeat;
+		const float lfoRate = 0.25f; //TODO
+
+		const double beatsPerLFORotation = lfoRate * beatsPerBar;
+		const double percentOfBeatDone = beatTick / ticksPerBeat;
+		const float totalBeats = bar * beatsPerBar + beat + percentOfBeatDone;
+
+		playHeadPos = std::fmod(totalBeats, beatsPerLFORotation) / beatsPerLFORotation;
 	}
 
 	void updatePlayHeadPos()
@@ -262,7 +269,9 @@ class WolfLFO : public Plugin
 		if (!timePos.playing)
 			return;
 
-		playHeadPos += 1.0f / getSampleRate() / 60.f * timePos.bbt.beatsPerMinute / 4.0f;
+		const float lfoRate = 0.25f; //TODO
+
+		playHeadPos += 1.0f / getSampleRate() / 60.f * (timePos.bbt.beatsPerMinute / timePos.bbt.beatsPerBar) / lfoRate;
 
 		if (playHeadPos > 1.0f)
 		{
@@ -293,7 +302,7 @@ class WolfLFO : public Plugin
 		wolf::WarpType verticalWarpType = (wolf::WarpType)std::round(parameters[paramVerticalWarpType].getRawValue());
 		lineEditor.setVerticalWarpType(verticalWarpType);
 
-		synchronisePlayHead();
+		synchronizePlayHead();
 
 		for (uint32_t i = 0; i < frames; ++i)
 		{

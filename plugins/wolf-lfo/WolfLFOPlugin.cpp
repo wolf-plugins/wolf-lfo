@@ -189,6 +189,14 @@ class WolfLFO : public Plugin
 			parameter.ranges.def = 1.0f;
 			parameter.hints = kParameterIsAutomable | kParameterIsBoolean;
 			break;
+		case paramSmoothing:
+			parameter.name = "Smoothing";
+			parameter.symbol = "smoothing";
+			parameter.ranges.min = 0.00001f;
+			parameter.ranges.max = 42.0f;
+			parameter.ranges.def = 20.0f;
+			parameter.hints = kParameterIsAutomable | kParameterIsLogarithmic;
+			break;
 		case paramOut:
 			parameter.name = "Out";
 			parameter.symbol = "out";
@@ -303,6 +311,9 @@ class WolfLFO : public Plugin
 		lineEditor.setVerticalWarpType(verticalWarpType);
 
 		synchronizePlayHead();
+
+		const float smoothingFrequency = 44.1f - parameters[paramSmoothing].getRawValue();
+		graphOutput.calculateCoeff(smoothingFrequency, getSampleRate());
 
 		for (uint32_t i = 0; i < frames; ++i)
 		{

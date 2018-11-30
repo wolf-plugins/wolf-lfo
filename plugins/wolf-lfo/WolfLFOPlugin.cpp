@@ -124,7 +124,7 @@ static float getLFORateInBars(LFORate rate)
 	return 1;
 }
 
-static float getLFORateInkHz(float rate)
+static float getFreeLFORate(float rate)
 {
 	return wolf::logScale(rate + 1, 1, LFORatesCount) - 1;
 }
@@ -282,6 +282,14 @@ class WolfLFO : public Plugin
 			parameter.ranges.def = 1.0f;
 			parameter.hints = kParameterIsAutomable | kParameterIsBoolean;
 			break;
+		case paramPhase:
+			parameter.name = "Phase";
+			parameter.symbol = "phase";
+			parameter.ranges.min = 0.0f;
+			parameter.ranges.max = 1.0f;
+			parameter.ranges.def = 0.0f;
+			parameter.hints = kParameterIsAutomable;
+			break;
 		case paramSmoothing:
 			parameter.name = "Smoothing";
 			parameter.symbol = "smoothing";
@@ -367,6 +375,14 @@ class WolfLFO : public Plugin
 		const float totalBeats = bar * beatsPerBar + beat + percentOfBeatDone;
 
 		playHeadPos = std::fmod(totalBeats, beatsPerLFORotation) / beatsPerLFORotation;
+
+		const float phase = parameters[paramPhase].getRawValue();
+		playHeadPos += phase;
+
+		if (playHeadPos > 1.0f)
+		{
+			playHeadPos -= 1.0f;
+		}
 	}
 
 	void updatePlayHeadPos()
@@ -387,7 +403,7 @@ class WolfLFO : public Plugin
 		}
 		else
 		{
-			const float lfoRate = getLFORateInkHz(parameters[paramLFORate].getSmoothedValue());
+			const float lfoRate = getFreeLFORate(parameters[paramLFORate].getSmoothedValue());
 
 			playHeadPos += 1.0f / getSampleRate() * lfoRate;
 		}

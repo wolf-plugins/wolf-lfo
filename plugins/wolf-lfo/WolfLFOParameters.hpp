@@ -19,6 +19,7 @@ enum Parameters
     paramVerticalWarpAmount,
     paramLFORate,
     paramBPMSync,
+    paramPhase,
     paramSmoothing,
     paramOut,
     paramCount

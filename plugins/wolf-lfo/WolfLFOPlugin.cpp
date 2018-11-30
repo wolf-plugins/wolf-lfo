@@ -389,13 +389,13 @@ class WolfLFO : public Plugin
 	{
 		const TimePosition &timePos = getTimePosition();
 
-		if (!timePos.playing)
-			return;
-
 		const bool bpmSync = std::round(parameters[paramBPMSync].getRawValue());
 
 		if (bpmSync)
 		{
+			if (!timePos.playing)
+				return;
+
 			const int lfoRateIndex = std::round(parameters[paramLFORate].getRawValue());
 			const float lfoRate = getLFORateInBars((LFORate)lfoRateIndex);
 

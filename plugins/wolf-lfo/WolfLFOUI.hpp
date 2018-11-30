@@ -54,14 +54,8 @@ protected:
 private:
   void toggleBottomBarVisibility();
 
-  ScopedPointer<RemoveDCSwitch> fSwitchRemoveDC;
-  ScopedPointer<NanoLabel> fLabelRemoveDC;
-
-  ScopedPointer<BipolarModeSwitch> fSwitchBipolarMode;
-  ScopedPointer<GlowingLabelsBox> fLabelsBoxBipolarMode;
-
-  ScopedPointer<OversampleWheel> fWheelOversample;
-  ScopedPointer<NanoLabel> fLabelWheelOversample;
+  ScopedPointer<RemoveDCSwitch> fSwitchBPMSync;
+  ScopedPointer<NanoLabel> fLabelBPMSync;
 
   ScopedPointer<VolumeKnob> fKnobPreGain, fKnobWet, fKnobPostGain;
   ScopedPointer<LabelBox> fLabelPreGain, fLabelWet, fLabelPostGain;
@@ -69,11 +63,7 @@ private:
   ScopedPointer<VolumeKnob> fKnobHorizontalWarp;
   ScopedPointer<LabelBoxList> fLabelListHorizontalWarpType;
 
-  ScopedPointer<VolumeKnob> fKnobVerticalWarp;
-  ScopedPointer<LabelBoxList> fLabelListVerticalWarpType;
-
   ScopedPointer<ArrowButton> fButtonLeftArrowHorizontalWarp, fButtonRightArrowHorizontalWarp;
-  ScopedPointer<ArrowButton> fButtonLeftArrowVerticalWarp, fButtonRightArrowVerticalWarp;
 
   ScopedPointer<ResizeHandle> fHandleResize;
 

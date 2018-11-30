@@ -45,23 +45,16 @@ WolfLFOUI::WolfLFOUI() : UI(611, 662),
     fGraphBar->setStrokePaint(linearGradient(0, 0, 0, graphBarHeight, Color(43, 43, 43, 255), Color(34, 34, 34, 255)));
     fGraphBar->setStrokeWidth(4.0f);
 
-    fSwitchRemoveDC = new RemoveDCSwitch(this, Size<uint>(30, 29));
-    fSwitchRemoveDC->setCallback(this);
-    fSwitchRemoveDC->setId(paramRemoveDC);
+    fSwitchBPMSync = new RemoveDCSwitch(this, Size<uint>(30, 29));
+    fSwitchBPMSync->setCallback(this);
+    fSwitchBPMSync->setId(paramBPMSync);
 
-    fLabelRemoveDC = new NanoLabel(this, Size<uint>(100, 29));
-    fLabelRemoveDC->setText("CENTER");
-    fLabelRemoveDC->setFontId(chivoBoldId);
-    fLabelRemoveDC->setFontSize(14.0f);
-    fLabelRemoveDC->setAlign(ALIGN_LEFT | ALIGN_MIDDLE);
-    fLabelRemoveDC->setMargin(Margin(3, 0, fSwitchRemoveDC->getWidth() / 2.0f, 0));
-
-    fSwitchBipolarMode = new BipolarModeSwitch(this, Size<uint>(16, 34));
-    fSwitchBipolarMode->setCallback(this);
-    fSwitchBipolarMode->setId(paramBipolarMode);
-
-    fLabelsBoxBipolarMode = new GlowingLabelsBox(this, Size<uint>(34, 42));
-    fLabelsBoxBipolarMode->setLabels({"UNI", "BI"});
+    fLabelBPMSync = new NanoLabel(this, Size<uint>(100, 29));
+    fLabelBPMSync->setText("BPM SYNC");
+    fLabelBPMSync->setFontId(chivoBoldId);
+    fLabelBPMSync->setFontSize(14.0f);
+    fLabelBPMSync->setAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+    fLabelBPMSync->setMargin(Margin(3, 0, fSwitchBPMSync->getWidth() / 2.0f, 0));
 
     fLabelPreGain = new LabelBox(this, Size<uint>(knobsLabelBoxWidth, knobsLabelBoxHeight));
     fLabelPreGain->setText("PRE");
@@ -99,15 +92,6 @@ WolfLFOUI::WolfLFOUI() : UI(611, 662),
     fLabelListHorizontalWarpType = new LabelBoxList(this, Size<uint>(knobsLabelBoxWidth + 3, knobsLabelBoxHeight));
     fLabelListHorizontalWarpType->setLabels({"–", "BEND +", "BEND -", "BEND +/-", "SKEW +", "SKEW -", "SKEW +/-"});
 
-    fKnobVerticalWarp = new VolumeKnob(this, Size<uint>(54, 54));
-    fKnobVerticalWarp->setCallback(this);
-    fKnobVerticalWarp->setRange(0.0f, 1.0f);
-    fKnobVerticalWarp->setId(paramVerticalWarpAmount);
-    fKnobVerticalWarp->setColor(Color(255, 225, 169, 255));
-
-    fLabelListVerticalWarpType = new LabelBoxList(this, Size<uint>(knobsLabelBoxWidth + 3, knobsLabelBoxHeight));
-    fLabelListVerticalWarpType->setLabels({"–", "BEND +", "BEND -", "BEND +/-", "SKEW +", "SKEW -", "SKEW +/-"});
-
     fButtonLeftArrowHorizontalWarp = new ArrowButton(this, Size<uint>(knobsLabelBoxHeight, knobsLabelBoxHeight));
     fButtonLeftArrowHorizontalWarp->setCallback(this);
     fButtonLeftArrowHorizontalWarp->setId(paramHorizontalWarpType);
@@ -117,16 +101,6 @@ WolfLFOUI::WolfLFOUI() : UI(611, 662),
     fButtonRightArrowHorizontalWarp->setCallback(this);
     fButtonRightArrowHorizontalWarp->setId(paramHorizontalWarpType);
     fButtonRightArrowHorizontalWarp->setArrowDirection(ArrowButton::Right);
-
-    fButtonLeftArrowVerticalWarp = new ArrowButton(this, Size<uint>(knobsLabelBoxHeight, knobsLabelBoxHeight));
-    fButtonLeftArrowVerticalWarp->setCallback(this);
-    fButtonLeftArrowVerticalWarp->setId(paramVerticalWarpType);
-    fButtonLeftArrowVerticalWarp->setArrowDirection(ArrowButton::Left);
-
-    fButtonRightArrowVerticalWarp = new ArrowButton(this, Size<uint>(knobsLabelBoxHeight, knobsLabelBoxHeight));
-    fButtonRightArrowVerticalWarp->setCallback(this);
-    fButtonRightArrowVerticalWarp->setId(paramVerticalWarpType);
-    fButtonRightArrowVerticalWarp->setArrowDirection(ArrowButton::Right);
 
     fHandleResize = new ResizeHandle(this, Size<uint>(18, 18));
     fHandleResize->setCallback(this);
@@ -141,17 +115,6 @@ WolfLFOUI::WolfLFOUI() : UI(611, 662),
     fLabelButtonResetGraph->setFontSize(15.0f);
     fLabelButtonResetGraph->setAlign(ALIGN_LEFT | ALIGN_MIDDLE);
     fLabelButtonResetGraph->setMargin(Margin(6, 0, std::round(fButtonResetGraph->getHeight() / 2.0f) + 1, 0));
-
-    fWheelOversample = new OversampleWheel(this, Size<uint>(47, 26));
-    fWheelOversample->setCallback(this);
-    fWheelOversample->setRange(0, 4);
-
-    fLabelWheelOversample = new NanoLabel(this, Size<uint>(85, 26));
-    fLabelWheelOversample->setText("OVERSAMPLE");
-    fLabelWheelOversample->setFontId(chivoBoldId);
-    fLabelWheelOversample->setFontSize(14.0f);
-    fLabelWheelOversample->setAlign(ALIGN_LEFT | ALIGN_MIDDLE);
-    fLabelWheelOversample->setMargin(Margin(0, 0, fLabelWheelOversample->getHeight() / 2.0f, 0));
     
     positionWidgets(width, height);
 }
@@ -209,19 +172,13 @@ void WolfLFOUI::positionWidgets(uint width, uint height)
 
     const float knobLabelMarginBottom = 12;
 
-    fSwitchRemoveDC->setAbsolutePos(24, height - 38);
-    fLabelRemoveDC->setAbsolutePos(24 + fSwitchRemoveDC->getWidth(), height - 38);
-
-    fSwitchBipolarMode->setAbsolutePos(31, height - 86);
-    fLabelsBoxBipolarMode->setAbsolutePos(53, height - 90);
+    fSwitchBPMSync->setAbsolutePos(24, height - 38);
+    fLabelBPMSync->setAbsolutePos(24 + fSwitchBPMSync->getWidth(), height - 38);
 
     const float graphBarMiddleY = fGraphBar->getAbsoluteY() + fGraphBar->getHeight() / 2.0f;
 
     fButtonResetGraph->setAbsolutePos(20, graphBarMiddleY - fButtonResetGraph->getHeight() / 2.0f);
     fLabelButtonResetGraph->setAbsolutePos(fButtonResetGraph->getAbsoluteX() + fButtonResetGraph->getWidth(), fButtonResetGraph->getAbsoluteY());
-
-    fWheelOversample->setAbsolutePos(width - fWheelOversample->getWidth() - 35, graphBarMiddleY - fWheelOversample->getHeight() / 2.0f);
-    fLabelWheelOversample->setAbsolutePos(fWheelOversample->getAbsoluteX() - fLabelWheelOversample->getWidth(), fWheelOversample->getAbsoluteY());
 
     float centerAlignDifference = (fLabelPreGain->getWidth() - fKnobPreGain->getWidth()) / 2.0f;
 
@@ -246,14 +203,6 @@ void WolfLFOUI::positionWidgets(uint width, uint height)
     fButtonLeftArrowHorizontalWarp->setAbsolutePos(fLabelListHorizontalWarpType->getAbsoluteX() - fButtonLeftArrowHorizontalWarp->getWidth(), fLabelListHorizontalWarpType->getAbsoluteY());
     fButtonRightArrowHorizontalWarp->setAbsolutePos(fLabelListHorizontalWarpType->getAbsoluteX() + fLabelListHorizontalWarpType->getWidth(), fLabelListHorizontalWarpType->getAbsoluteY());
 
-    centerAlignDifference = (fLabelListVerticalWarpType->getWidth() - fKnobVerticalWarp->getWidth()) / 2.0f;
-
-    fKnobVerticalWarp->setAbsolutePos(fKnobPreGain->getAbsoluteX() - 110, height - 90);
-    fLabelListVerticalWarpType->setAbsolutePos(fKnobPreGain->getAbsoluteX() - 110 - centerAlignDifference, height - fLabelListVerticalWarpType->getHeight() - knobLabelMarginBottom);
-
-    fButtonLeftArrowVerticalWarp->setAbsolutePos(fLabelListVerticalWarpType->getAbsoluteX() - fButtonLeftArrowVerticalWarp->getWidth(), fLabelListVerticalWarpType->getAbsoluteY());
-    fButtonRightArrowVerticalWarp->setAbsolutePos(fLabelListVerticalWarpType->getAbsoluteX() + fLabelListVerticalWarpType->getWidth(), fLabelListVerticalWarpType->getAbsoluteY());
-
     fHandleResize->setAbsolutePos(width - fHandleResize->getWidth(), height - fHandleResize->getHeight());
 }
 
@@ -270,20 +219,9 @@ void WolfLFOUI::parameterChanged(uint32_t index, float value)
     case paramPostGain:
         fKnobPostGain->setValue(value);
         break;
-    case paramRemoveDC:
-        fSwitchRemoveDC->setDown(value >= 0.50f);
+    case paramBPMSync:
+        fSwitchBPMSync->setDown(value >= 0.50f);
         break;
-    case paramOversample:
-        fWheelOversample->setValue(value);
-        break;
-    case paramBipolarMode:
-    {
-        const bool down = value >= 0.50f;
-
-        fSwitchBipolarMode->setDown(down);
-        fLabelsBoxBipolarMode->setSelectedIndex(down ? 1 : 0);
-        break;
-    }
     case paramHorizontalWarpType:
     {
         const int warpType = std::round(value);
@@ -297,20 +235,7 @@ void WolfLFOUI::parameterChanged(uint32_t index, float value)
         fKnobHorizontalWarp->setValue(value);
         fGraphWidget->setHorizontalWarpAmount(value);
         break;
-    case paramVerticalWarpType:
-    {
-        const int warpType = std::round(value);
-
-        fGraphWidget->setVerticalWarpType((wolf::WarpType)warpType);
-        fLabelListVerticalWarpType->setSelectedIndex(warpType);
-
-        break;
-    }
-    case paramVerticalWarpAmount:
-        fKnobVerticalWarp->setValue(value);
-        fGraphWidget->setVerticalWarpAmount(value);
-        break;
-    case paramOut:
+    case paramPlayheadPos:
         fGraphWidget->updateInput(value);
         break;
     default:
@@ -378,45 +303,8 @@ void WolfLFOUI::uiReshape(uint width, uint height)
     positionWidgets(width, height);
 }
 
-void WolfLFOUI::toggleBottomBarVisibility()
-{
-    fBottomBarVisible = !fBottomBarVisible;
-
-    fLabelsBoxBipolarMode->setVisible(fBottomBarVisible);
-    fSwitchBipolarMode->setVisible(fBottomBarVisible);
-    fSwitchRemoveDC->setVisible(fBottomBarVisible);
-    fKnobPostGain->setVisible(fBottomBarVisible);
-    fKnobPreGain->setVisible(fBottomBarVisible);
-
-    fKnobHorizontalWarp->setVisible(fBottomBarVisible);
-    fLabelListHorizontalWarpType->setVisible(fBottomBarVisible);
-    fButtonLeftArrowHorizontalWarp->setVisible(fBottomBarVisible);
-    fButtonRightArrowHorizontalWarp->setVisible(fBottomBarVisible);
-
-    fKnobVerticalWarp->setVisible(fBottomBarVisible);
-    fLabelListVerticalWarpType->setVisible(fBottomBarVisible);
-    fButtonLeftArrowVerticalWarp->setVisible(fBottomBarVisible);
-    fButtonRightArrowVerticalWarp->setVisible(fBottomBarVisible);
-
-    fKnobWet->setVisible(fBottomBarVisible);
-    fLabelPostGain->setVisible(fBottomBarVisible);
-    fLabelPreGain->setVisible(fBottomBarVisible);
-    fLabelWet->setVisible(fBottomBarVisible);
-    fLabelRemoveDC->setVisible(fBottomBarVisible);
-
-    positionWidgets(getWidth(), getHeight());
-}
-
 bool WolfLFOUI::onKeyboard(const KeyboardEvent &ev)
 {
-    if (ev.press)
-    {
-        if (ev.key == 95) //F11
-        {
-            toggleBottomBarVisibility();
-        }
-    }
-
     return true;
 }
 
@@ -426,11 +314,6 @@ void WolfLFOUI::nanoSwitchClicked(NanoSwitch *nanoSwitch)
     const int value = nanoSwitch->isDown() ? 1 : 0;
 
     setParameterValue(switchId, value);
-
-    if (switchId == paramBipolarMode)
-    {
-        fLabelsBoxBipolarMode->setSelectedIndex(value);
-    }
 }
 
 void WolfLFOUI::nanoButtonClicked(NanoButton *nanoButton)
@@ -441,57 +324,24 @@ void WolfLFOUI::nanoButtonClicked(NanoButton *nanoButton)
         return;
     }
 
-    bool horizontal = false;
-
     if (nanoButton == fButtonLeftArrowHorizontalWarp)
     {
         fLabelListHorizontalWarpType->goPrevious();
-        horizontal = true;
     }
     else if (nanoButton == fButtonRightArrowHorizontalWarp)
     {
         fLabelListHorizontalWarpType->goNext();
-        horizontal = true;
-    }
-    else if (nanoButton == fButtonLeftArrowVerticalWarp)
-    {
-        fLabelListVerticalWarpType->goPrevious();
-    }
-    else if (nanoButton == fButtonRightArrowVerticalWarp)
-    {
-        fLabelListVerticalWarpType->goNext();
     }
 
-    if (horizontal)
-    {
-        const int index = fLabelListHorizontalWarpType->getSelectedIndex();
+    const int index = fLabelListHorizontalWarpType->getSelectedIndex();
 
-        setParameterValue(paramHorizontalWarpType, index);
-        fGraphWidget->setHorizontalWarpType((wolf::WarpType)index);
-    }
-    else
-    {
-        const int index = fLabelListVerticalWarpType->getSelectedIndex();
-
-        setParameterValue(paramVerticalWarpType, index);
-        fGraphWidget->setVerticalWarpType((wolf::WarpType)index);
-    }
+    setParameterValue(paramHorizontalWarpType, index);
+    fGraphWidget->setHorizontalWarpType((wolf::WarpType)index);
 }
 
 void WolfLFOUI::nanoWheelValueChanged(NanoWheel *nanoWheel, const int value)
 {
     const uint id = nanoWheel->getId();
-
-    setParameterValue(paramOversample, value);
-
-    if (id == paramHorizontalWarpType)
-    {
-        fGraphWidget->setHorizontalWarpType((wolf::WarpType)std::round(value));
-    }
-    else if (id == paramVerticalWarpType)
-    {
-        fGraphWidget->setVerticalWarpType((wolf::WarpType)std::round(value));
-    }
 }
 
 void WolfLFOUI::nanoKnobValueChanged(NanoKnob *nanoKnob, const float value)
@@ -503,10 +353,6 @@ void WolfLFOUI::nanoKnobValueChanged(NanoKnob *nanoKnob, const float value)
     if (id == paramHorizontalWarpAmount)
     {
         fGraphWidget->setHorizontalWarpAmount(value);
-    }
-    else if (id == paramVerticalWarpAmount)
-    {
-        fGraphWidget->setVerticalWarpAmount(value);
     }
 }
 

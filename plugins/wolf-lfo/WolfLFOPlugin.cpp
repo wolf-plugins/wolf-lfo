@@ -135,7 +135,7 @@ class WolfLFO : public Plugin
 	WolfLFO() : Plugin(paramCount, 0, 1),
 				graphOutput(),
 				mustCopyLineEditor(false),
-				playHeadPos(0.0f)
+				PlayheadPos(0.0f)
 	{
 		graphOutput.calculateCoeff(20.f, getSampleRate());
 	}
@@ -207,31 +207,6 @@ class WolfLFO : public Plugin
 			parameter.ranges.def = 1.0f;
 			parameter.hints = kParameterIsAutomable | kParameterIsLogarithmic;
 			break;
-		case paramRemoveDC:
-			parameter.name = "Remove DC Offset";
-			parameter.symbol = "removedc";
-			parameter.ranges.min = 0.0f;
-			parameter.ranges.max = 1.0f;
-			parameter.ranges.def = 1.0f;
-			parameter.hints = kParameterIsAutomable | kParameterIsBoolean | kParameterIsInteger;
-			break;
-		case paramOversample:
-			//None, 2x, 4x, 8x, 16x
-			parameter.name = "Oversample";
-			parameter.symbol = "oversample";
-			parameter.ranges.min = 0.0f;
-			parameter.ranges.max = 4.0f;
-			parameter.ranges.def = 0.0f;
-			parameter.hints = kParameterIsAutomable | kParameterIsInteger;
-			break;
-		case paramBipolarMode:
-			parameter.name = "Bipolar Mode";
-			parameter.symbol = "bipolarmode";
-			parameter.ranges.min = 0.0f;
-			parameter.ranges.max = 1.0f;
-			parameter.ranges.def = 0.0f;
-			parameter.hints = kParameterIsAutomable | kParameterIsBoolean | kParameterIsInteger;
-			break;
 		case paramHorizontalWarpType:
 			//None, Bend +, Bend -, Bend +/-, Skew +, Skew -, Skew +/-
 			parameter.name = "H Warp Type";
@@ -244,23 +219,6 @@ class WolfLFO : public Plugin
 		case paramHorizontalWarpAmount:
 			parameter.name = "H Warp Amount";
 			parameter.symbol = "warpamount";
-			parameter.ranges.min = 0.0f;
-			parameter.ranges.max = 1.0f;
-			parameter.ranges.def = 0.0f;
-			parameter.hints = kParameterIsAutomable;
-			break;
-		case paramVerticalWarpType:
-			//None, Bend +, Bend -, Bend +/-, Skew +, Skew -, Skew +/-
-			parameter.name = "V Warp Type";
-			parameter.symbol = "vwarptype";
-			parameter.ranges.min = 0.0f;
-			parameter.ranges.max = 6.0f;
-			parameter.ranges.def = 0.0f;
-			parameter.hints = kParameterIsAutomable | kParameterIsInteger;
-			break;
-		case paramVerticalWarpAmount:
-			parameter.name = "V Warp Amount";
-			parameter.symbol = "vwarpamount";
 			parameter.ranges.min = 0.0f;
 			parameter.ranges.max = 1.0f;
 			parameter.ranges.def = 0.0f;
@@ -298,8 +256,8 @@ class WolfLFO : public Plugin
 			parameter.ranges.def = 20.0f;
 			parameter.hints = kParameterIsAutomable | kParameterIsLogarithmic;
 			break;
-		case paramOut:
-			parameter.name = "Out";
+		case paramPlayheadPos:
+			parameter.name = "Playhead Position";
 			parameter.symbol = "out";
 			parameter.hints = kParameterIsOutput;
 			parameter.ranges.def = 0.0f;
@@ -349,7 +307,7 @@ class WolfLFO : public Plugin
 		return lineEditor.getValueAt(input);
 	}
 
-	void synchronizePlayHead()
+	void synchronizePlayhead()
 	{
 		const bool bpmSync = std::round(parameters[paramBPMSync].getRawValue());
 
@@ -374,18 +332,18 @@ class WolfLFO : public Plugin
 		const double percentOfBeatDone = beatTick / ticksPerBeat;
 		const float totalBeats = bar * beatsPerBar + beat + percentOfBeatDone;
 
-		playHeadPos = std::fmod(totalBeats, beatsPerLFORotation) / beatsPerLFORotation;
+		PlayheadPos = std::fmod(totalBeats, beatsPerLFORotation) / beatsPerLFORotation;
 
 		const float phase = parameters[paramPhase].getRawValue();
-		playHeadPos += phase;
+		PlayheadPos += phase;
 
-		if (playHeadPos > 1.0f)
+		if (PlayheadPos > 1.0f)
 		{
-			playHeadPos -= 1.0f;
+			PlayheadPos -= 1.0f;
 		}
 	}
 
-	void updatePlayHeadPos()
+	void updatePlayheadPos()
 	{
 		const TimePosition &timePos = getTimePosition();
 
@@ -399,18 +357,18 @@ class WolfLFO : public Plugin
 			const int lfoRateIndex = std::round(parameters[paramLFORate].getRawValue());
 			const float lfoRate = getLFORateInBars((LFORate)lfoRateIndex);
 
-			playHeadPos += 1.0f / getSampleRate() / 60.f * (timePos.bbt.beatsPerMinute / timePos.bbt.beatsPerBar) / lfoRate;
+			PlayheadPos += 1.0f / getSampleRate() / 60.f * (timePos.bbt.beatsPerMinute / timePos.bbt.beatsPerBar) / lfoRate;
 		}
 		else
 		{
 			const float lfoRate = getFreeLFORate(parameters[paramLFORate].getSmoothedValue());
 
-			playHeadPos += 1.0f / getSampleRate() * lfoRate;
+			PlayheadPos += 1.0f / getSampleRate() * lfoRate;
 		}
 
-		if (playHeadPos > 1.0f)
+		if (PlayheadPos > 1.0f)
 		{
-			playHeadPos -= 1.0f;
+			PlayheadPos -= 1.0f;
 		}
 	}
 
@@ -434,10 +392,7 @@ class WolfLFO : public Plugin
 		wolf::WarpType horizontalWarpType = (wolf::WarpType)std::round(parameters[paramHorizontalWarpType].getRawValue());
 		lineEditor.setHorizontalWarpType(horizontalWarpType);
 
-		wolf::WarpType verticalWarpType = (wolf::WarpType)std::round(parameters[paramVerticalWarpType].getRawValue());
-		lineEditor.setVerticalWarpType(verticalWarpType);
-
-		synchronizePlayHead();
+		synchronizePlayhead();
 
 		const float smoothingFrequency = 44.1f - parameters[paramSmoothing].getRawValue();
 		graphOutput.calculateCoeff(smoothingFrequency, getSampleRate());
@@ -445,7 +400,6 @@ class WolfLFO : public Plugin
 		for (uint32_t i = 0; i < frames; ++i)
 		{
 			lineEditor.setHorizontalWarpAmount(parameters[paramHorizontalWarpAmount].getSmoothedValue());
-			lineEditor.setVerticalWarpAmount(parameters[paramVerticalWarpAmount].getSmoothedValue());
 
 			const float preGain = parameters[paramPreGain].getSmoothedValue();
 
@@ -461,7 +415,7 @@ class WolfLFO : public Plugin
 				inputR = 0.0f;
 			}
 
-			const float rawGraphOutput = getGraphValue(playHeadPos);
+			const float rawGraphOutput = getGraphValue(PlayheadPos);
 
 			const double euler = std::exp(1.0);
 			const float scaledOutput = (std::exp(rawGraphOutput) - 1) / (euler - 1);
@@ -479,10 +433,10 @@ class WolfLFO : public Plugin
 			outputs[0][i] = (dry * inputL + wet * outL) * postGain;
 			outputs[1][i] = (dry * inputR + wet * outR) * postGain;
 
-			updatePlayHeadPos();
+			updatePlayheadPos();
 		}
 
-		setParameterValue(paramOut, playHeadPos);
+		setParameterValue(paramPlayheadPos, PlayheadPos);
 
 		mutex.unlock();
 	}
@@ -495,7 +449,7 @@ class WolfLFO : public Plugin
 	wolf::Graph tempLineEditor;
 	bool mustCopyLineEditor;
 
-	float playHeadPos;
+	float PlayheadPos;
 
 	Mutex mutex;
 

@@ -10,18 +10,13 @@ enum Parameters
     paramPreGain = 0,
     paramWet,
     paramPostGain,
-    paramRemoveDC,
-    paramOversample,
-    paramBipolarMode,
     paramHorizontalWarpType,
     paramHorizontalWarpAmount,
-    paramVerticalWarpType,
-    paramVerticalWarpAmount,
     paramLFORate,
     paramBPMSync,
     paramPhase,
     paramSmoothing,
-    paramOut,
+    paramPlayheadPos,
     paramCount
 };
 

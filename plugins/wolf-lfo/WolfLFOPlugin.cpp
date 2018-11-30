@@ -29,6 +29,7 @@
 #include "Graph.hpp"
 #include "Oversampler.hpp"
 #include "ParamSmooth.hpp"
+#include "Mathf.hpp"
 
 #include "DspFilters/Dsp.h"
 
@@ -121,6 +122,11 @@ static float getLFORateInBars(LFORate rate)
 	}
 
 	return 1;
+}
+
+static float getLFORateInkHz(float rate)
+{
+	return wolf::logScale(rate + 1, 1, LFORatesCount) - 1;
 }
 
 class WolfLFO : public Plugin
@@ -337,6 +343,11 @@ class WolfLFO : public Plugin
 
 	void synchronizePlayHead()
 	{
+		const bool bpmSync = std::round(parameters[paramBPMSync].getRawValue());
+
+		if (!bpmSync)
+			return;
+
 		const TimePosition::BarBeatTick bbt = getTimePosition().bbt;
 
 		if (!bbt.valid)
@@ -365,10 +376,21 @@ class WolfLFO : public Plugin
 		if (!timePos.playing)
 			return;
 
-		const int lfoRateIndex = std::round(parameters[paramLFORate].getRawValue());
-		const float lfoRate = getLFORateInBars((LFORate)lfoRateIndex);
+		const bool bpmSync = std::round(parameters[paramBPMSync].getRawValue());
 
-		playHeadPos += 1.0f / getSampleRate() / 60.f * (timePos.bbt.beatsPerMinute / timePos.bbt.beatsPerBar) / lfoRate;
+		if (bpmSync)
+		{
+			const int lfoRateIndex = std::round(parameters[paramLFORate].getRawValue());
+			const float lfoRate = getLFORateInBars((LFORate)lfoRateIndex);
+
+			playHeadPos += 1.0f / getSampleRate() / 60.f * (timePos.bbt.beatsPerMinute / timePos.bbt.beatsPerBar) / lfoRate;
+		}
+		else
+		{
+			const float lfoRate = getLFORateInkHz(parameters[paramLFORate].getSmoothedValue());
+
+			playHeadPos += 1.0f / getSampleRate() * lfoRate;
+		}
 
 		if (playHeadPos > 1.0f)
 		{

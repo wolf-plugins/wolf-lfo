@@ -36,6 +36,93 @@ START_NAMESPACE_DISTRHO
 
 // -----------------------------------------------------------------------------------------------------------
 
+enum LFORate
+{
+	SixteenBar = 0,
+	TwelveBar,
+	NineBar,
+	EightBar,
+	SixBar,
+	FourBar,
+	ThreeBar,
+	TwoBar,
+	OneAndHalfBar,
+	OneBar,
+	HalfBar,
+	OneThirdBar,
+	OneFourthBar,
+	OneSixthBar,
+	OneEighthBar,
+	OneNinthBar,
+	OneTwelfthBar,
+	OneSixteenthBar,
+	OneThirtyTwoBar,
+	OneSixtyFourthBar,
+	OneOneHundredTwentyEighthBar,
+	OneTwoHundredFiftySixthBar,
+	OneFiveHundredTwelveBar,
+	LFORatesCount
+};
+
+static float getLFORateInBars(LFORate rate)
+{
+	DISTRHO_SAFE_ASSERT_RETURN(rate != LFORatesCount, 1);
+
+	switch (rate)
+	{
+	case SixteenBar:
+		return 16;
+	case TwelveBar:
+		return 12;
+	case NineBar:
+		return 9;
+	case EightBar:
+		return 8;
+	case SixBar:
+		return 6;
+	case FourBar:
+		return 4;
+	case ThreeBar:
+		return 3;
+	case TwoBar:
+		return 2;
+	case OneAndHalfBar:
+		return 1.5f;
+	case OneBar:
+		return 1;
+	case HalfBar:
+		return 1.0f / 2.0f;
+	case OneThirdBar:
+		return 1.0f / 3.0f;
+	case OneFourthBar:
+		return 1.0f / 4.0f;
+	case OneSixthBar:
+		return 1.0f / 6.0f;
+	case OneEighthBar:
+		return 1.0f / 8.0f;
+	case OneNinthBar:
+		return 1.0f / 9.0f;
+	case OneTwelfthBar:
+		return 1.0f / 12.0f;
+	case OneSixteenthBar:
+		return 1.0f / 16.0f;
+	case OneThirtyTwoBar:
+		return 1.0f / 32.0f;
+	case OneSixtyFourthBar:
+		return 1.0f / 64.0f;
+	case OneOneHundredTwentyEighthBar:
+		return 1.0f / 128.0f;
+	case OneTwoHundredFiftySixthBar:
+		return 1.0f / 256.0f;
+	case OneFiveHundredTwelveBar:
+		return 1.0f / 512.0f;
+	case LFORatesCount:
+		return 1;
+	}
+
+	return 1;
+}
+
 class WolfLFO : public Plugin
 {
   public:
@@ -177,9 +264,9 @@ class WolfLFO : public Plugin
 			parameter.name = "LFO Rate";
 			parameter.symbol = "lforate";
 			parameter.ranges.min = 0.0f;
-			parameter.ranges.max = 22.0f;
-			parameter.ranges.def = 12.0f;
-			parameter.hints = kParameterIsAutomable | kParameterIsInteger;
+			parameter.ranges.max = LFORatesCount - 1;
+			parameter.ranges.def = OneFourthBar;
+			parameter.hints = kParameterIsAutomable;
 			break;
 		case paramBPMSync:
 			parameter.name = "BPM Sync";
@@ -261,7 +348,8 @@ class WolfLFO : public Plugin
 		const double ticksPerBeat = bbt.ticksPerBeat;
 		const float beatsPerBar = bbt.beatsPerBar;
 
-		const float lfoRate = 0.25f; //TODO
+		const int lfoRateIndex = std::round(parameters[paramLFORate].getRawValue());
+		const float lfoRate = getLFORateInBars((LFORate)lfoRateIndex);
 
 		const double beatsPerLFORotation = lfoRate * beatsPerBar;
 		const double percentOfBeatDone = beatTick / ticksPerBeat;
@@ -277,7 +365,8 @@ class WolfLFO : public Plugin
 		if (!timePos.playing)
 			return;
 
-		const float lfoRate = 0.25f; //TODO
+		const int lfoRateIndex = std::round(parameters[paramLFORate].getRawValue());
+		const float lfoRate = getLFORateInBars((LFORate)lfoRateIndex);
 
 		playHeadPos += 1.0f / getSampleRate() / 60.f * (timePos.bbt.beatsPerMinute / timePos.bbt.beatsPerBar) / lfoRate;
 

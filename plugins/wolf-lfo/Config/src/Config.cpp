@@ -80,6 +80,8 @@ Color graph_margin = Color(33, 32, 39, 255);
 Color top_border = Color(0, 0, 0, 255);
 Color side_borders = Color(100, 100, 100, 255);
 
+Color right_click_menu_border_color = Color(10, 10, 10, 255);
+
 static std::string getLocalConfigPath()
 {
     const std::string configName = "wolf-lfo.conf";

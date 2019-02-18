@@ -47,6 +47,7 @@ OBJS_UI  = \
 	Common/Utils/src/Mathf.cpp.o \
 	Common/Structures/src/Graph.cpp.o \
 	Common/Structures/src/Layout.cpp.o \
+	Common/Structures/src/Margin.cpp.o \
 	Common/Structures/src/Animation.cpp.o \
 	Common/Widgets/src/WolfWidget.cpp.o \
 	Common/Widgets/src/GraphNode.cpp.o \

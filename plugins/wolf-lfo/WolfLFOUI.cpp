@@ -15,7 +15,7 @@
 START_NAMESPACE_DISTRHO
 
 WolfLFOUI::WolfLFOUI() : UI(611, 662),
-                               fBottomBarVisible(true)
+                         fBottomBarVisible(true)
 {
     const uint minWidth = 611;
     const uint minHeight = 438;
@@ -115,7 +115,7 @@ WolfLFOUI::WolfLFOUI() : UI(611, 662),
     fLabelButtonResetGraph->setFontSize(15.0f);
     fLabelButtonResetGraph->setAlign(ALIGN_LEFT | ALIGN_MIDDLE);
     fLabelButtonResetGraph->setMargin(Margin(6, 0, std::round(fButtonResetGraph->getHeight() / 2.0f) + 1, 0));
-    
+
     positionWidgets(width, height);
 }
 

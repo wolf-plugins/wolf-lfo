@@ -72,7 +72,6 @@ OBJS_UI  = \
 	Common/Widgets/src/RightClickMenu.cpp.o \
 	Libs/inih/ini.c.o \
 	Libs/inih/INIReader.cpp.o \
-	Resources/Fonts/roboto_light.cpp.o \
 	Resources/Fonts/chivo_bold.cpp.o \
 	Resources/Fonts/chivo_italic.cpp.o \
 	WolfLFOUI.cpp.o 

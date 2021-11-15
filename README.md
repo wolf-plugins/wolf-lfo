@@ -2,4 +2,4 @@
 
 This project is currently abandoned.
 
-I recommend using BShapr instead: https://github.com/sjaehn/BShapr
+If you want a similar plugin, I highly recommend using [B.Shapr](https://github.com/sjaehn/BShapr) by [sjaehn](https://github.com/sjaehn) instead.
